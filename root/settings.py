@@ -127,8 +127,11 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny"
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
     ]
 }
 
@@ -137,5 +140,20 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    # Read the current CSRF cookie for every unsafe Swagger request. The token
+    # embedded when Swagger loads becomes stale after the login view rotates it.
+    'SWAGGER_UI_SETTINGS': '''{
+        "deepLinking": true,
+        "requestInterceptor": (request) => {
+            const csrfCookie = document.cookie
+                .split("; ")
+                .find((cookie) => cookie.startsWith("csrftoken="));
+            const method = (request.method || "GET").toUpperCase();
+            if (csrfCookie && !["GET", "HEAD", "OPTIONS", "TRACE"].includes(method)) {
+                request.headers["X-CSRFToken"] = decodeURIComponent(csrfCookie.slice("csrftoken=".length));
+            }
+            return request;
+        }
+    }''',
     # OTHER SETTINGS
 }
