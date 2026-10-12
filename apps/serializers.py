@@ -12,7 +12,7 @@ class TaskModelSerializer(ModelSerializer):
     class Meta:
         model = Task
         # fields = "id", "title", "is_done", "created_at"
-        fields = "id", "title", "is_done", "created_at", "owner"
+        fields = "id", "title", "photo", "is_done", "created_at", "owner"
         # exclude = ()
         read_only_fields = "id", "created_at", "owner"
 

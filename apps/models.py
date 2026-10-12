@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField, BooleanField, DateTimeField
+from django.db.models.fields.files import ImageField
 from django.db.models.fields.related import ForeignKey
 
 
@@ -9,5 +10,6 @@ from django.db.models.fields.related import ForeignKey
 class Task(Model):
     owner = ForeignKey(User, on_delete=CASCADE, null=True)
     title = CharField(max_length=255, verbose_name="Sarlavha")
+    photo = ImageField(upload_to="%Y/%m/%d/", blank=True, null=True)
     is_done = BooleanField(db_default=False)
     created_at = DateTimeField(auto_now_add=True)

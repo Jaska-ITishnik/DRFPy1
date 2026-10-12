@@ -1,11 +1,12 @@
 from django.contrib.auth import login, logout
 from django.middleware.csrf import get_token
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from drf_spectacular.utils import extend_schema
 
 from apps.models import Task
 from apps.serializers import (
@@ -22,6 +23,7 @@ from apps.serializers import (
 class TaskModelViewSet(ModelViewSet):
     serializer_class = TaskModelSerializer
     permission_classes = (IsAuthenticated,)
+    parser_classes = [MultiPartParser]
 
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)
